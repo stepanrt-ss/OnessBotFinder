@@ -1,10 +1,6 @@
-import asyncio
-import threading
-
-from telethon import TelegramClient, events
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from bot.lib import FindWords
+from newLib import FindWords
 import json
 
 
@@ -44,21 +40,18 @@ def updateKeys():
     if data_request.get('keys-type') == 'negative-one':
         one_negative_phrases = data_request.get('data').split(',')
         createDump('negative-one')
-        initMainFuncs()
         return jsonify({'message': 'success'}), 200
 
     elif data_request.get('keys-type') == 'negative-two':
         two_negative_phrases[data_request.get('index')] = (data_request.get('data-f-keys').split(','),
                                                            data_request.get('data-s-keys').split(','))
         createDump('negative-two')
-        initMainFuncs()
         return jsonify({'message': 'success'}), 200
 
     elif data_request.get('keys-type') == 'plus-two':
         two_keys[data_request.get('index')] = (data_request.get('data-f-keys').split(','),
                                                data_request.get('data-s-keys').split(','))
         createDump('plus-two')
-        initMainFuncs()
         return jsonify({'message': 'success'}), 200
 
     elif data_request.get('keys-type') == 'plus-there':
@@ -66,7 +59,6 @@ def updateKeys():
                                                  data_request.get('data-s-keys').split(','),
                                                  data_request.get('data-t-keys').split(','))
         createDump('plus-there')
-        initMainFuncs()
         return jsonify({'message': 'success'}), 200
 
     else:
@@ -80,19 +72,16 @@ def deleteKeysList():
     if data_request['type-list'] == 'negative-two':
         del two_negative_phrases[data_request.get('index')]
         createDump('negative-two')
-        initMainFuncs()
         return jsonify({'message': 'success'}), 200
 
     elif data_request['type-list'] == 'plus-two':
         del two_keys[data_request.get('index')]
         createDump('plus-two')
-        initMainFuncs()
         return jsonify({'message': 'success'}), 200
 
     elif data_request['type-list'] == 'plus-there':
         del there_keys[data_request.get('index')]
         createDump('plus-there')
-        initMainFuncs()
         return jsonify({'message': 'success'}), 200
 
     else:
@@ -105,19 +94,16 @@ def appendKeysList():
     if data_request.get('type-list') == 'negative-two':
         two_negative_phrases.append((['NaN'], ['NaN']))
         createDump('negative-two')
-        initMainFuncs()
         return jsonify({'message': 'success'}), 200
 
     elif data_request.get('type-list') == 'plus-two':
         two_keys.append((['NaN'], ['NaN']))
         createDump('plus-two')
-        initMainFuncs()
         return jsonify({'message': 'success'}), 200
 
     elif data_request.get('type-list') == 'plus-there':
         there_keys.append((['NaN'], ['NaN'], ['NaN']))
         createDump('plus-there')
-        initMainFuncs()
 
         return jsonify({'message': 'success'}), 200
 
@@ -187,17 +173,7 @@ def loadDump():
     print(two_negative_phrases)
 
 
-
-def initMainFuncs():
-    lib.initWords(two_keys, 'two_keys')
-    lib.initWords(there_keys, 'there_keys')
-    lib.initWords(one_negative_phrases, 'one_negative_phrases')
-    lib.initWords(two_negative_phrases, 'two_negative_phrases')
-
-
-
 if __name__ == "__main__":
     loadDump()
-    initMainFuncs()
-    app.run(debug=True)
+    app.run(debug=True, host='194.87.43.6', port='5000')
 
